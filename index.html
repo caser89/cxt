@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Memory Master</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="top-nav">
+            <button id="back-btn" class="hidden" style="border:none; background:white; padding:7px 10px; border-radius:8px; color:#4834d4;"><i class="fas fa-chevron-right"></i></button>
+            <div id="nav-title" class="nav-title">المكتبة</div>
+            <div style="width:38px"></div>
+        </header>
+
+        <section id="subjects-screen">
+            <div id="subjects-list"></div>
+            <button onclick="openSubModal()" class="fab"><i class="fas fa-plus"></i></button>
+        </section>
+
+        <section id="questions-screen" class="hidden">
+            <div id="questions-list" class="questions-grid"></div>
+            <button onclick="openQEditor()" class="fab"><i class="fas fa-plus"></i></button>
+        </section>
+
+        <section id="editor-screen" class="hidden">
+            <div style="display:flex; gap:8px; margin-bottom:8px;">
+                <input type="number" id="q-num" style="width:65px" placeholder="رقم">
+                <input type="text" id="q-title" placeholder="عنوان السؤال">
+            </div>
+            <div class="option-group">
+                <span class="option-label">مستوى الفهم</span>
+                <div class="chips">
+                    <label style="flex:1"><input type="radio" name="status" value="green" checked style="display:none"><div class="chip-item">متقن</div></label>
+                    <label style="flex:1"><input type="radio" name="status" value="yellow" style="display:none"><div class="chip-item">متوسط</div></label>
+                    <label style="flex:1"><input type="radio" name="status" value="red" style="display:none"><div class="chip-item">ضعيف</div></label>
+                </div>
+            </div>
+            <div class="option-group">
+                <span class="option-label">عدد الكلمات في الفراغ</span>
+                <div class="chips">
+                    <label style="flex:1"><input type="radio" name="grouping" value="1" checked style="display:none"><div class="chip-item">كلمة 1</div></label>
+                    <label style="flex:1"><input type="radio" name="grouping" value="2" style="display:none"><div class="chip-item">كلمتين</div></label>
+                    <label style="flex:1"><input type="radio" name="grouping" value="3" style="display:none"><div class="chip-item">3 كلمات</div></label>
+                </div>
+            </div>
+            <div class="option-group">
+                <span class="option-label">نسبة الفراغات</span>
+                <div class="chips">
+                    <label style="flex:1"><input type="radio" name="diff" value="0.3" style="display:none"><div class="chip-item">قليل</div></label>
+                    <label style="flex:1"><input type="radio" name="diff" value="0.6" checked style="display:none"><div class="chip-item">نصف</div></label>
+                    <label style="flex:1"><input type="radio" name="diff" value="0.9" style="display:none"><div class="chip-item">كل النص</div></label>
+                </div>
+            </div>
+            <textarea id="q-text" rows="7" placeholder="اكتب النص هنا..."></textarea>
+            <button onclick="saveQuestion()" class="main-btn">حفظ البطاقة</button>
+        </section>
+
+        <section id="quiz-screen" class="hidden">
+            <div class="quiz-container"><h3 id="quiz-title" style="font-size:0.9rem; margin-top:0;"></h3><div id="quiz-display" class="quiz-text"></div></div>
+            <div id="quiz-pool" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:15px; justify-content:center;"></div>
+        </section>
+
+        <div id="sub-modal" class="modal-bg hidden">
+            <div class="modal-content">
+                <h3 id="sub-modal-title">مادة جديدة</h3>
+                <input type="hidden" id="edit-sub-id">
+                <input type="text" id="sub-name" placeholder="اسم المادة">
+                <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-bottom:12px;">
+                    <label><input type="radio" name="sub-color" value="#4834d4" checked style="display:none"><div style="background:#4834d4; height:32px; border-radius:8px;"></div></label>
+                    <label><input type="radio" name="sub-color" value="#2ecc71" style="display:none"><div style="background:#2ecc71; height:32px; border-radius:8px;"></div></label>
+                    <label><input type="radio" name="sub-color" value="#e74c3c" style="display:none"><div style="background:#e74c3c; height:32px; border-radius:8px;"></div></label>
+                    <label><input type="radio" name="sub-color" value="#f1c40f" style="display:none"><div style="background:#f1c40f; height:32px; border-radius:8px;"></div></label>
+                    <label><input type="radio" name="sub-color" value="#9b59b6" style="display:none"><div style="background:#9b59b6; height:32px; border-radius:8px;"></div></label>
+                    <label><input type="radio" name="sub-color" value="#34495e" style="display:none"><div style="background:#34495e; height:32px; border-radius:8px;"></div></label>
+                </div>
+                <button onclick="saveSubject()" class="main-btn">حفظ</button>
+                <button onclick="closeSubModal()" style="width:100%; background:none; border:none; margin-top:8px; color:#777;">إلغاء</button>
+            </div>
+        </div>
+
+        <div id="delete-modal" class="modal-bg hidden">
+            <div class="modal-content" style="text-align: center;">
+                <i class="fas fa-trash-alt" style="font-size: 2rem; color: #e74c3c; margin-bottom: 15px;"></i>
+                <h3 style="margin: 0; font-size: 1.1rem;">تأكيد الحذف؟</h3>
+                <p style="font-size: 0.85rem; color: #666; margin: 10px 0 20px 0;">سيتم مسح البيانات نهائياً.</p>
+                <button id="confirm-delete-btn" class="main-btn" style="background: #e74c3c; margin-bottom: 10px;">حذف</button>
+                <button onclick="closeDeleteModal()" style="width:100%; background:none; border:none; color:#777;">إلغاء</button>
+            </div>
+        </div>
+
+        <div id="alert-modal" class="modal-bg hidden">
+            <div class="modal-content" style="text-align: center; border-top: 5px solid #f1c40f;">
+                <i class="fas fa-exclamation-circle" style="font-size: 2rem; color: #f1c40f; margin-bottom: 15px;"></i>
+                <h3 style="margin: 0; font-size: 1.1rem;">تنبيه</h3>
+                <p id="alert-msg" style="font-size: 0.85rem; color: #666; margin: 10px 0 20px 0;"></p>
+                <button onclick="closeAlert()" class="main-btn">حسناً</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
